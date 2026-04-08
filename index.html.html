@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>오늘 저녁 메뉴 추천</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f5f4f0;
+      color: #1a1a1a;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+    .container {
+      background: #fff;
+      border-radius: 20px;
+      padding: 2rem;
+      max-width: 520px;
+      width: 100%;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    }
+    h1 {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 1.75rem;
+      color: #111;
+    }
+    .section-label {
+      font-size: 13px;
+      color: #888;
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+    .btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 1.5rem;
+    }
+    .mood-btn {
+      cursor: pointer;
+      padding: 9px 15px;
+      border-radius: 10px;
+      border: 1.5px solid #e0e0e0;
+      background: #fff;
+      color: #333;
+      font-size: 14px;
+      transition: all 0.15s;
+    }
+    .mood-btn:hover { background: #f5f5f5; border-color: #ccc; }
+    .mood-btn.selected {
+      border: 2px solid #378add;
+      background: #e6f1fb;
+      color: #185fa5;
+      font-weight: 500;
+    }
+    .budget-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 1.75rem;
+    }
+    input[type=range] {
+      flex: 1;
+      accent-color: #378add;
+      height: 4px;
+    }
+    .budget-val {
+      font-size: 14px;
+      font-weight: 500;
+      min-width: 90px;
+      color: #333;
+    }
+    .pick-btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      border: none;
+      background: #1a1a1a;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .pick-btn:hover { background: #333; }
+    .pick-btn:active { transform: scale(0.98); }
+    .result-card {
+      margin-top: 1.5rem;
+      background: #fafafa;
+      border: 1px solid #eee;
+      border-radius: 16px;
+      padding: 1.25rem;
+      animation: popIn 0.25s ease;
+    }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.96) translateY(6px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .result-header { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; }
+    .result-emoji { font-size: 42px; }
+    .result-name { font-size: 20px; font-weight: 600; color: #111; }
+    .result-meta { font-size: 13px; color: #999; margin-top: 3px; }
+    .result-desc { font-size: 14px; color: #555; line-height: 1.65; margin-bottom: 12px; }
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+    .tag {
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+    .action-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .action-btn {
+      padding: 9px 18px;
+      border-radius: 10px;
+      border: 1.5px solid #e0e0e0;
+      background: #fff;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+    .action-btn:hover { background: #f5f5f5; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>🍽️ 오늘 저녁 뭐 먹지?</h1>
+
+  <p class="section-label">오늘 기분이 어때요?</p>
+  <div class="btn-group" id="mood-btns">
+    <button class="mood-btn" data-mood="편안한">😌 편안하게</button>
+    <button class="mood-btn" data-mood="든든한">💪 든든하게</button>
+    <button class="mood-btn" data-mood="가벼운">🌿 가볍게</button>
+    <button class="mood-btn" data-mood="특별한">✨ 특별하게</button>
+    <button class="mood-btn" data-mood="빠른">⚡ 빠르게</button>
+  </div>
+
+  <p class="section-label">어떤 음식 스타일?</p>
+  <div class="btn-group" id="cuisine-btns">
+    <button class="mood-btn" data-cuisine="한식">🇰🇷 한식</button>
+    <button class="mood-btn" data-cuisine="중식">🥢 중식</button>
+    <button class="mood-btn" data-cuisine="일식">🍱 일식</button>
+    <button class="mood-btn" data-cuisine="양식">🍝 양식</button>
+    <button class="mood-btn" data-cuisine="상관없음">🎲 아무거나</button>
+  </div>
+
+  <p class="section-label">예산은?</p>
+  <div class="budget-row">
+    <input type="range" min="0" max="3" step="1" value="1" id="budget-slider" />
+    <span class="budget-val" id="budget-label">1~2만원</span>
+  </div>
+
+  <button class="pick-btn" onclick="pickMenu()">오늘 메뉴 골라줘! 🎯</button>
+
+  <div id="result-area"></div>
+</div>
+
+<script>
+const menus = [
+  { name:"된장찌개 정식", emoji:"🍲", cuisine:"한식", mood:["편안한","든든한"], budget:[0,1], desc:"구수한 된장에 밥 한 공기, 완벽한 집밥 감성", tags:["따뜻함","국물"], kcal:"~550kcal" },
+  { name:"삼겹살", emoji:"🥩", cuisine:"한식", mood:["든든한","특별한"], budget:[1,2,3], desc:"상추에 싸먹는 그 맛, 오늘 저녁 주인공", tags:["고기","술안주"], kcal:"~800kcal" },
+  { name:"비빔밥", emoji:"🥗", cuisine:"한식", mood:["편안한","가벼운"], budget:[0,1], desc:"고슬고슬한 밥에 알록달록 나물, 참기름 한 방울", tags:["건강","균형"], kcal:"~480kcal" },
+  { name:"짜장면", emoji:"🍜", cuisine:"중식", mood:["편안한","빠른"], budget:[0,1], desc:"달달한 춘장 소스의 클래식, 짜장면은 배신 없음", tags:["배달","간편"], kcal:"~650kcal" },
+  { name:"마라탕", emoji:"🌶️", cuisine:"중식", mood:["특별한","든든한"], budget:[1,2], desc:"얼얼하고 매운 마라 향, 중독성 강한 한 그릇", tags:["매운맛","야채"], kcal:"~700kcal" },
+  { name:"탕수육", emoji:"🍖", cuisine:"중식", mood:["특별한","든든한"], budget:[2,3], desc:"바삭한 튀김에 새콤달콤 소스, 찍먹이냐 부먹이냐", tags:["바삭","파티"], kcal:"~750kcal" },
+  { name:"초밥", emoji:"🍣", cuisine:"일식", mood:["특별한","가벼운"], budget:[2,3], desc:"신선한 생선과 샤리의 조화, 오늘 좀 특별하게", tags:["신선","프리미엄"], kcal:"~500kcal" },
+  { name:"라멘", emoji:"🍥", cuisine:"일식", mood:["편안한","든든한"], budget:[1,2], desc:"진한 육수에 탱글탱글 면발, 이게 바로 위로 음식", tags:["국물","면"], kcal:"~680kcal" },
+  { name:"돈까스", emoji:"🍱", cuisine:"일식", mood:["든든한","빠른"], budget:[1,2], desc:"바삭한 빵가루 옷 입은 돼지고기, 소스가 포인트", tags:["바삭","정식"], kcal:"~720kcal" },
+  { name:"파스타", emoji:"🍝", cuisine:"양식", mood:["특별한","가벼운"], budget:[1,2,3], desc:"알덴테 면에 크리미한 소스, 오늘은 이탈리아 느낌", tags:["로맨틱","홈카페"], kcal:"~580kcal" },
+  { name:"피자", emoji:"🍕", cuisine:"양식", mood:["든든한","특별한","편안한"], budget:[1,2,3], desc:"쭉 늘어나는 치즈, 모두가 행복해지는 마법의 원판", tags:["파티","배달"], kcal:"~750kcal" },
+  { name:"샌드위치 & 샐러드", emoji:"🥙", cuisine:"양식", mood:["가벼운","빠른"], budget:[0,1], desc:"신선하고 가볍게, 내일도 몸이 고마워할 선택", tags:["건강","다이어트"], kcal:"~350kcal" },
+  { name:"순두부찌개", emoji:"🥘", cuisine:"한식", mood:["편안한","가벼운"], budget:[0,1], desc:"보글보글 매운 순두부, 속이 따뜻해지는 한 끼", tags:["얼큰","다이어트"], kcal:"~420kcal" },
+  { name:"냉면", emoji:"🍜", cuisine:"한식", mood:["가벼운","빠른"], budget:[0,1], desc:"쫄깃한 면에 시원한 육수, 더운 날엔 역시 냉면", tags:["시원함","여름"], kcal:"~430kcal" },
+  { name:"스테이크", emoji:"🥩", cuisine:"양식", mood:["특별한","든든한"], budget:[3], desc:"두툼하게 굽은 스테이크, 오늘 나에게 주는 선물", tags:["프리미엄","특별한날"], kcal:"~700kcal" },
+];
+
+const budgetLabels = ["1만원 이하","1~2만원","2~3만원","3만원 이상"];
+const tagColors = [
+  {bg:"#e6f1fb",text:"#185fa5"},{bg:"#eaf3de",text:"#3b6d11"},
+  {bg:"#faeeda",text:"#854f0b"},{bg:"#fbeaf0",text:"#993556"},{bg:"#e1f5ee",text:"#0f6e56"}
+];
+let selectedMood = null, selectedCuisine = null, selectedBudget = 1;
+
+document.getElementById('budget-slider').addEventListener('input', function() {
+  selectedBudget = parseInt(this.value);
+  document.getElementById('budget-label').textContent = budgetLabels[selectedBudget];
+});
+
+document.querySelectorAll('#mood-btns .mood-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('#mood-btns .mood-btn').forEach(b => b.classList.remove('selected'));
+    this.classList.add('selected');
+    selectedMood = this.dataset.mood;
+  });
+});
+
+document.querySelectorAll('#cuisine-btns .mood-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('#cuisine-btns .mood-btn').forEach(b => b.classList.remove('selected'));
+    this.classList.add('selected');
+    selectedCuisine = this.dataset.cuisine;
+  });
+});
+
+function pickMenu() {
+  let filtered = menus.filter(m => {
+    const moodOk = !selectedMood || m.mood.includes(selectedMood);
+    const cuisineOk = !selectedCuisine || selectedCuisine === '상관없음' || m.cuisine === selectedCuisine;
+    const budgetOk = m.budget.includes(selectedBudget);
+    return moodOk && cuisineOk && budgetOk;
+  });
+  if (filtered.length === 0) filtered = menus;
+  const pick = filtered[Math.floor(Math.random() * filtered.length)];
+
+  const tagsHtml = pick.tags.map((t, i) => {
+    const c = tagColors[i % tagColors.length];
+    return `<span class="tag" style="background:${c.bg};color:${c.text}">${t}</span>`;
+  }).join('');
+
+  document.getElementById('result-area').innerHTML = `
+    <div class="result-card">
+      <div class="result-header">
+        <span class="result-emoji">${pick.emoji}</span>
+        <div>
+          <div class="result-name">${pick.name}</div>
+          <div class="result-meta">${pick.cuisine} · ${pick.kcal}</div>
+        </div>
+      </div>
+      <p class="result-desc">${pick.desc}</p>
+      <div class="tags">${tagsHtml}</div>
+      <div class="action-row">
+        <button class="action-btn" onclick="pickMenu()">다시 골라줘 🔄</button>
+      </div>
+    </div>
+  `;
+}
+</script>
+</body>
+</html>
