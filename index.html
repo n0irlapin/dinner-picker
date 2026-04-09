@@ -20,83 +20,36 @@
       background: #fff;
       border-radius: 20px;
       padding: 2rem;
-      max-width: 520px;
+      max-width: 540px;
       width: 100%;
       box-shadow: 0 4px 24px rgba(0,0,0,0.08);
     }
-    h1 {
-      font-size: 22px;
-      font-weight: 600;
-      margin-bottom: 1.75rem;
-      color: #111;
-    }
-    .section-label {
-      font-size: 13px;
-      color: #888;
-      font-weight: 500;
-      margin-bottom: 10px;
-    }
-    .btn-group {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 1.5rem;
-    }
+    h1 { font-size: 22px; font-weight: 600; margin-bottom: 1.75rem; color: #111; }
+    .section-label { font-size: 13px; color: #888; font-weight: 500; margin-bottom: 10px; }
+    .btn-group { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1.5rem; }
     .mood-btn {
-      cursor: pointer;
-      padding: 9px 15px;
-      border-radius: 10px;
-      border: 1.5px solid #e0e0e0;
-      background: #fff;
-      color: #333;
-      font-size: 14px;
-      transition: all 0.15s;
+      cursor: pointer; padding: 9px 15px; border-radius: 10px;
+      border: 1.5px solid #e0e0e0; background: #fff; color: #333;
+      font-size: 14px; transition: all 0.15s;
     }
     .mood-btn:hover { background: #f5f5f5; border-color: #ccc; }
     .mood-btn.selected {
-      border: 2px solid #378add;
-      background: #e6f1fb;
-      color: #185fa5;
-      font-weight: 500;
+      border: 2px solid #378add; background: #e6f1fb;
+      color: #185fa5; font-weight: 500;
     }
-    .budget-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 1.75rem;
-    }
-    input[type=range] {
-      flex: 1;
-      accent-color: #378add;
-      height: 4px;
-    }
-    .budget-val {
-      font-size: 14px;
-      font-weight: 500;
-      min-width: 90px;
-      color: #333;
-    }
+    .budget-row { display: flex; align-items: center; gap: 12px; margin-bottom: 1.75rem; }
+    input[type=range] { flex: 1; accent-color: #378add; height: 4px; }
+    .budget-val { font-size: 14px; font-weight: 500; min-width: 90px; color: #333; }
     .pick-btn {
-      width: 100%;
-      padding: 14px;
-      border-radius: 12px;
-      border: none;
-      background: #1a1a1a;
-      color: #fff;
-      font-size: 16px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background 0.15s, transform 0.1s;
+      width: 100%; padding: 14px; border-radius: 12px; border: none;
+      background: #1a1a1a; color: #fff; font-size: 16px; font-weight: 500;
+      cursor: pointer; transition: background 0.15s, transform 0.1s;
     }
     .pick-btn:hover { background: #333; }
     .pick-btn:active { transform: scale(0.98); }
     .result-card {
-      margin-top: 1.5rem;
-      background: #fafafa;
-      border: 1px solid #eee;
-      border-radius: 16px;
-      padding: 1.25rem;
-      animation: popIn 0.25s ease;
+      margin-top: 1.5rem; background: #fafafa; border: 1px solid #eee;
+      border-radius: 16px; padding: 1.25rem; animation: popIn 0.25s ease;
     }
     @keyframes popIn {
       from { opacity: 0; transform: scale(0.96) translateY(6px); }
@@ -106,22 +59,14 @@
     .result-emoji { font-size: 42px; }
     .result-name { font-size: 20px; font-weight: 600; color: #111; }
     .result-meta { font-size: 13px; color: #999; margin-top: 3px; }
+    .result-notice { font-size: 12px; color: #aaa; margin-top: 2px; }
     .result-desc { font-size: 14px; color: #555; line-height: 1.65; margin-bottom: 12px; }
     .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
-    .tag {
-      font-size: 12px;
-      padding: 4px 10px;
-      border-radius: 20px;
-    }
+    .tag { font-size: 12px; padding: 4px 10px; border-radius: 20px; }
     .action-row { display: flex; gap: 8px; flex-wrap: wrap; }
     .action-btn {
-      padding: 9px 18px;
-      border-radius: 10px;
-      border: 1.5px solid #e0e0e0;
-      background: #fff;
-      font-size: 13px;
-      cursor: pointer;
-      transition: background 0.12s;
+      padding: 9px 18px; border-radius: 10px; border: 1.5px solid #e0e0e0;
+      background: #fff; font-size: 13px; cursor: pointer; transition: background 0.12s;
     }
     .action-btn:hover { background: #f5f5f5; }
   </style>
@@ -145,6 +90,8 @@
     <button class="mood-btn" data-cuisine="중식">🥢 중식</button>
     <button class="mood-btn" data-cuisine="일식">🍱 일식</button>
     <button class="mood-btn" data-cuisine="양식">🍝 양식</button>
+    <button class="mood-btn" data-cuisine="아시안식">🌏 아시안식</button>
+    <button class="mood-btn" data-cuisine="분식">🥚 분식</button>
     <button class="mood-btn" data-cuisine="상관없음">🎲 아무거나</button>
   </div>
 
@@ -161,21 +108,73 @@
 
 <script>
 const menus = [
+  // 한식
   { name:"된장찌개 정식", emoji:"🍲", cuisine:"한식", mood:["편안한","든든한"], budget:[0,1], desc:"구수한 된장에 밥 한 공기, 완벽한 집밥 감성", tags:["따뜻함","국물"], kcal:"~550kcal" },
   { name:"삼겹살", emoji:"🥩", cuisine:"한식", mood:["든든한","특별한"], budget:[1,2,3], desc:"상추에 싸먹는 그 맛, 오늘 저녁 주인공", tags:["고기","술안주"], kcal:"~800kcal" },
   { name:"비빔밥", emoji:"🥗", cuisine:"한식", mood:["편안한","가벼운"], budget:[0,1], desc:"고슬고슬한 밥에 알록달록 나물, 참기름 한 방울", tags:["건강","균형"], kcal:"~480kcal" },
+  { name:"순두부찌개", emoji:"🥘", cuisine:"한식", mood:["편안한","가벼운"], budget:[0,1], desc:"보글보글 매운 순두부, 속이 따뜻해지는 한 끼", tags:["얼큰","국물"], kcal:"~420kcal" },
+  { name:"냉면", emoji:"🍜", cuisine:"한식", mood:["가벼운","빠른"], budget:[0,1], desc:"쫄깃한 면에 시원한 육수, 더운 날엔 역시 냉면", tags:["시원함","면"], kcal:"~430kcal" },
+  { name:"갈비탕", emoji:"🍖", cuisine:"한식", mood:["든든한","특별한"], budget:[1,2], desc:"진하고 깊은 갈비 육수, 뼈까지 발라먹는 행복", tags:["국물","보양"], kcal:"~600kcal" },
+  { name:"제육볶음 정식", emoji:"🍚", cuisine:"한식", mood:["든든한","빠른"], budget:[0,1], desc:"매콤달콤 돼지고기에 밥 한 공기, 오늘도 힘내자", tags:["매운맛","집밥"], kcal:"~620kcal" },
+  { name:"불고기 정식", emoji:"🥩", cuisine:"한식", mood:["특별한","편안한"], budget:[1,2], desc:"달콤하게 재운 소고기 불고기, 온 가족이 좋아하는 맛", tags:["고기","달콤"], kcal:"~580kcal" },
+  { name:"김치찌개", emoji:"🍲", cuisine:"한식", mood:["편안한","든든한"], budget:[0,1], desc:"묵은지에 돼지고기 넣어 끓인 찌개, 밥 도둑이 따로 없다", tags:["얼큰","집밥"], kcal:"~500kcal" },
+  { name:"해물파전", emoji:"🥞", cuisine:"한식", mood:["특별한","편안한"], budget:[1,2], desc:"바삭하게 구운 해물파전에 막걸리 한 잔, 비 오는 날의 정석", tags:["해산물","술안주"], kcal:"~480kcal" },
+  { name:"곱창전골", emoji:"🫕", cuisine:"한식", mood:["특별한","든든한"], budget:[2,3], desc:"진한 국물에 곱창 가득, 한 번 빠지면 헤어나올 수 없는 맛", tags:["고기","특별한날"], kcal:"~700kcal" },
+  { name:"보쌈", emoji:"🥬", cuisine:"한식", mood:["든든한","특별한"], budget:[2,3], desc:"부드러운 수육에 김치 한 쌈, 어른도 아이도 좋아하는 메뉴", tags:["고기","파티"], kcal:"~650kcal" },
+  { name:"육개장", emoji:"🍲", cuisine:"한식", mood:["든든한","편안한"], budget:[0,1], desc:"얼큰하고 진한 소고기 국물, 피로가 싹 풀리는 한 그릇", tags:["얼큰","보양"], kcal:"~520kcal" },
+  { name:"삼계탕", emoji:"🍗", cuisine:"한식", mood:["특별한","든든한"], budget:[1,2], desc:"통닭에 인삼 넣어 끓인 보양식, 몸이 먼저 알아보는 맛", tags:["보양","특별한날"], kcal:"~600kcal" },
+  { name:"낙지볶음 정식", emoji:"🐙", cuisine:"한식", mood:["든든한","특별한"], budget:[1,2], desc:"쫄깃한 낙지에 매콤한 양념, 밥 한 공기 뚝딱 비우는 맛", tags:["매운맛","해산물"], kcal:"~480kcal" },
+  // 중식
   { name:"짜장면", emoji:"🍜", cuisine:"중식", mood:["편안한","빠른"], budget:[0,1], desc:"달달한 춘장 소스의 클래식, 짜장면은 배신 없음", tags:["배달","간편"], kcal:"~650kcal" },
   { name:"마라탕", emoji:"🌶️", cuisine:"중식", mood:["특별한","든든한"], budget:[1,2], desc:"얼얼하고 매운 마라 향, 중독성 강한 한 그릇", tags:["매운맛","야채"], kcal:"~700kcal" },
   { name:"탕수육", emoji:"🍖", cuisine:"중식", mood:["특별한","든든한"], budget:[2,3], desc:"바삭한 튀김에 새콤달콤 소스, 찍먹이냐 부먹이냐", tags:["바삭","파티"], kcal:"~750kcal" },
+  { name:"짬뽕", emoji:"🥣", cuisine:"중식", mood:["든든한","편안한"], budget:[0,1], desc:"불맛 나는 얼큰한 국물, 해산물이 가득한 한 그릇", tags:["얼큰","해산물"], kcal:"~580kcal" },
+  { name:"마라샹궈", emoji:"🫕", cuisine:"중식", mood:["특별한","든든한"], budget:[1,2,3], desc:"마라 향 가득한 볶음 요리, 재료를 직접 골라 먹는 재미", tags:["매운맛","이국적"], kcal:"~750kcal" },
+  { name:"딤섬", emoji:"🥟", cuisine:"중식", mood:["특별한","가벼운"], budget:[2,3], desc:"한 입 크기로 쪄낸 다양한 딤섬, 홍콩 레스토랑 기분", tags:["프리미엄","이국적"], kcal:"~500kcal" },
+  { name:"볶음밥", emoji:"🍳", cuisine:"중식", mood:["빠른","든든한"], budget:[0,1], desc:"고슬고슬 기름에 볶은 밥, 간단하지만 항상 맛있는 선택", tags:["간편","든든"], kcal:"~600kcal" },
+  { name:"양꼬치", emoji:"🍢", cuisine:"중식", mood:["특별한","든든한"], budget:[1,2], desc:"향신료 가득한 양고기 꼬치, 맥주랑 같이 먹으면 최고", tags:["고기","술안주"], kcal:"~700kcal" },
+  // 일식
   { name:"초밥", emoji:"🍣", cuisine:"일식", mood:["특별한","가벼운"], budget:[2,3], desc:"신선한 생선과 샤리의 조화, 오늘 좀 특별하게", tags:["신선","프리미엄"], kcal:"~500kcal" },
   { name:"라멘", emoji:"🍥", cuisine:"일식", mood:["편안한","든든한"], budget:[1,2], desc:"진한 육수에 탱글탱글 면발, 이게 바로 위로 음식", tags:["국물","면"], kcal:"~680kcal" },
   { name:"돈까스", emoji:"🍱", cuisine:"일식", mood:["든든한","빠른"], budget:[1,2], desc:"바삭한 빵가루 옷 입은 돼지고기, 소스가 포인트", tags:["바삭","정식"], kcal:"~720kcal" },
+  { name:"우동", emoji:"🍜", cuisine:"일식", mood:["편안한","가벼운"], budget:[0,1], desc:"쫄깃한 우동 면에 담백한 육수, 속이 편안해지는 한 끼", tags:["국물","담백"], kcal:"~400kcal" },
+  { name:"오마카세", emoji:"🍱", cuisine:"일식", mood:["특별한"], budget:[3], desc:"셰프에게 모든 걸 맡기는 코스 요리, 오늘은 진짜 특별한 날", tags:["프리미엄","특별한날"], kcal:"~600kcal" },
+  { name:"규동", emoji:"🥩", cuisine:"일식", mood:["빠른","든든한"], budget:[0,1], desc:"달달하게 졸인 소고기 덮밥, 간단하고 든든한 한 그릇", tags:["덮밥","간편"], kcal:"~580kcal" },
+  { name:"야키니쿠", emoji:"🔥", cuisine:"일식", mood:["특별한","든든한"], budget:[2,3], desc:"직접 구워 먹는 일본식 고기, 고기 굽는 재미가 있는 저녁", tags:["고기","파티"], kcal:"~800kcal" },
+  { name:"소바", emoji:"🍜", cuisine:"일식", mood:["가벼운","편안한"], budget:[0,1], desc:"메밀 향 솔솔 나는 소바 한 그릇, 깔끔하고 담백하게", tags:["담백","면"], kcal:"~380kcal" },
+  { name:"나베", emoji:"🫕", cuisine:"일식", mood:["편안한","특별한"], budget:[1,2,3], desc:"여러 재료를 넣고 끓여 먹는 일본식 전골, 같이 먹으면 더 맛있어", tags:["국물","파티"], kcal:"~550kcal" },
+  // 양식
   { name:"파스타", emoji:"🍝", cuisine:"양식", mood:["특별한","가벼운"], budget:[1,2,3], desc:"알덴테 면에 크리미한 소스, 오늘은 이탈리아 느낌", tags:["로맨틱","홈카페"], kcal:"~580kcal" },
   { name:"피자", emoji:"🍕", cuisine:"양식", mood:["든든한","특별한","편안한"], budget:[1,2,3], desc:"쭉 늘어나는 치즈, 모두가 행복해지는 마법의 원판", tags:["파티","배달"], kcal:"~750kcal" },
   { name:"샌드위치 & 샐러드", emoji:"🥙", cuisine:"양식", mood:["가벼운","빠른"], budget:[0,1], desc:"신선하고 가볍게, 내일도 몸이 고마워할 선택", tags:["건강","다이어트"], kcal:"~350kcal" },
-  { name:"순두부찌개", emoji:"🥘", cuisine:"한식", mood:["편안한","가벼운"], budget:[0,1], desc:"보글보글 매운 순두부, 속이 따뜻해지는 한 끼", tags:["얼큰","다이어트"], kcal:"~420kcal" },
-  { name:"냉면", emoji:"🍜", cuisine:"한식", mood:["가벼운","빠른"], budget:[0,1], desc:"쫄깃한 면에 시원한 육수, 더운 날엔 역시 냉면", tags:["시원함","여름"], kcal:"~430kcal" },
   { name:"스테이크", emoji:"🥩", cuisine:"양식", mood:["특별한","든든한"], budget:[3], desc:"두툼하게 굽은 스테이크, 오늘 나에게 주는 선물", tags:["프리미엄","특별한날"], kcal:"~700kcal" },
+  { name:"버거", emoji:"🍔", cuisine:"양식", mood:["든든한","빠른"], budget:[0,1,2], desc:"두툼한 패티에 신선한 야채, 손으로 잡고 한 입 크게", tags:["간편","배달"], kcal:"~700kcal" },
+  { name:"리조또", emoji:"🍚", cuisine:"양식", mood:["특별한","편안한"], budget:[1,2,3], desc:"크리미하게 익힌 쌀 요리, 레스토랑 분위기 물씬", tags:["로맨틱","프리미엄"], kcal:"~550kcal" },
+  { name:"바베큐 립", emoji:"🍖", cuisine:"양식", mood:["특별한","든든한"], budget:[2,3], desc:"훈연향 가득한 바베큐 폭립, 손으로 뜯어먹는 재미", tags:["고기","파티"], kcal:"~850kcal" },
+  { name:"치킨 윙", emoji:"🍗", cuisine:"양식", mood:["빠른","든든한"], budget:[1,2], desc:"바삭하게 튀긴 치킨 윙에 소스를 듬뿍, 맥주 안주로도 최고", tags:["바삭","술안주"], kcal:"~650kcal" },
+  { name:"수프 & 브레드", emoji:"🥖", cuisine:"양식", mood:["가벼운","편안한"], budget:[0,1], desc:"따뜻한 크림수프에 바삭한 빵, 가볍고 포근한 저녁", tags:["담백","건강"], kcal:"~380kcal" },
+  // 아시안식
+  { name:"쌀국수", emoji:"🍜", cuisine:"아시안식", mood:["가벼운","편안한"], budget:[0,1], desc:"맑고 깊은 육수에 쌀면, 베트남 감성 가득한 한 그릇", tags:["담백","국물"], kcal:"~430kcal" },
+  { name:"팟타이", emoji:"🥡", cuisine:"아시안식", mood:["특별한","가벼운"], budget:[1,2], desc:"달콤새콤 볶음면에 땅콩 토핑, 태국 길거리 감성", tags:["이국적","면"], kcal:"~550kcal" },
+  { name:"나시고렝", emoji:"🍳", cuisine:"아시안식", mood:["든든한","빠른"], budget:[1,2], desc:"인도네시아식 볶음밥에 달걀 프라이 올려서 한 그릇", tags:["볶음밥","이국적"], kcal:"~600kcal" },
+  { name:"똠얌꿍", emoji:"🦐", cuisine:"아시안식", mood:["특별한","든든한"], budget:[1,2,3], desc:"새콤매콤한 태국 스프, 새우가 가득한 이국적인 맛", tags:["매운맛","해산물"], kcal:"~350kcal" },
+  { name:"반미", emoji:"🥖", cuisine:"아시안식", mood:["가벼운","빠른"], budget:[0,1], desc:"바삭한 바게트에 베트남 스타일 속재료, 가볍고 맛있는 샌드위치", tags:["간편","이국적"], kcal:"~450kcal" },
+  { name:"커리", emoji:"🍛", cuisine:"아시안식", mood:["든든한","특별한"], budget:[1,2], desc:"향긋한 향신료가 가득한 진한 커리, 밥이랑 최고 궁합", tags:["향긋함","든든"], kcal:"~650kcal" },
+  { name:"분짜", emoji:"🍢", cuisine:"아시안식", mood:["가벼운","특별한"], budget:[1,2], desc:"베트남식 숯불 돼지고기에 국수 찍어먹기, 새콤달콤한 맛", tags:["이국적","담백"], kcal:"~480kcal" },
+  { name:"라크사", emoji:"🍜", cuisine:"아시안식", mood:["든든한","특별한"], budget:[1,2], desc:"코코넛 밀크 베이스의 싱가포르 국수, 진하고 독특한 풍미", tags:["이국적","국물"], kcal:"~600kcal" },
+  { name:"샤브샤브", emoji:"🫕", cuisine:"아시안식", mood:["특별한","가벼운"], budget:[2,3], desc:"육수에 야채랑 고기 살살 익혀 먹는 건강한 한 끼", tags:["건강","파티"], kcal:"~450kcal" },
+  { name:"타코", emoji:"🌮", cuisine:"아시안식", mood:["특별한","빠른"], budget:[1,2], desc:"바삭한 타코 쉘에 매콤한 고기와 야채, 손으로 집어 먹는 재미", tags:["이국적","간편"], kcal:"~500kcal" },
+  // 분식
+  { name:"떡볶이", emoji:"🌶️", cuisine:"분식", mood:["편안한","빠른"], budget:[0,1], desc:"쫄깃한 떡에 매콤달콤 소스, 영원한 국민 분식", tags:["매운맛","간식"], kcal:"~480kcal" },
+  { name:"김밥", emoji:"🍙", cuisine:"분식", mood:["가벼운","빠른"], budget:[0], desc:"한 줄 뚝딱, 도시락처럼 간편하고 든든한 김밥 한 줄", tags:["간편","든든"], kcal:"~350kcal" },
+  { name:"순대국밥", emoji:"🍲", cuisine:"분식", mood:["든든한","편안한"], budget:[0,1], desc:"뜨끈한 국물에 순대 가득, 속이 확 풀리는 한 그릇", tags:["국물","보양"], kcal:"~550kcal" },
+  { name:"라면", emoji:"🍜", cuisine:"분식", mood:["편안한","빠른"], budget:[0], desc:"냄비에 끓여 먹는 라면 한 그릇, 이보다 쉬운 저녁은 없다", tags:["간편","혼밥"], kcal:"~500kcal" },
+  { name:"치킨", emoji:"🍗", cuisine:"분식", mood:["든든한","특별한"], budget:[1,2], desc:"바삭하고 촉촉한 치킨, 오늘 저녁은 치킨이다", tags:["배달","파티"], kcal:"~800kcal" },
+  { name:"튀김 & 어묵", emoji:"🍢", cuisine:"분식", mood:["가벼운","빠른"], budget:[0], desc:"길거리 감성 그대로, 어묵 국물 한 모금에 행복", tags:["간식","저렴"], kcal:"~380kcal" },
+  { name:"쫄면", emoji:"🍜", cuisine:"분식", mood:["가벼운","빠른"], budget:[0,1], desc:"탱글탱글 쫄면에 새콤매콤 양념, 야채랑 비벼 먹으면 꿀맛", tags:["매운맛","면"], kcal:"~430kcal" },
+  { name:"닭갈비", emoji:"🍗", cuisine:"분식", mood:["든든한","특별한"], budget:[1,2], desc:"매콤달콤 닭갈비에 볶음밥까지, 냄비 긁어먹는 게 제맛", tags:["매운맛","고기"], kcal:"~680kcal" },
+  { name:"엽기떡볶이", emoji:"🔥", cuisine:"분식", mood:["특별한","든든한"], budget:[1,2], desc:"일반 떡볶이보다 훨씬 매운 엽기 소스, 도전해볼 용기 있어?", tags:["매운맛","챌린지"], kcal:"~550kcal" },
+  { name:"부대찌개", emoji:"🫕", cuisine:"분식", mood:["든든한","편안한"], budget:[1,2], desc:"햄에 라면 사리 넣은 얼큰한 부대찌개, 밥 비벼 먹으면 끝판왕", tags:["얼큰","든든"], kcal:"~700kcal" },
 ];
 
 const budgetLabels = ["1만원 이하","1~2만원","2~3만원","3만원 이상"];
@@ -207,14 +206,33 @@ document.querySelectorAll('#cuisine-btns .mood-btn').forEach(btn => {
 });
 
 function pickMenu() {
-  let filtered = menus.filter(m => {
-    const moodOk = !selectedMood || m.mood.includes(selectedMood);
-    const cuisineOk = !selectedCuisine || selectedCuisine === '상관없음' || m.cuisine === selectedCuisine;
-    const budgetOk = m.budget.includes(selectedBudget);
-    return moodOk && cuisineOk && budgetOk;
-  });
-  if (filtered.length === 0) filtered = menus;
-  const pick = filtered[Math.floor(Math.random() * filtered.length)];
+  const cuisineOk = m => !selectedCuisine || selectedCuisine === '상관없음' || m.cuisine === selectedCuisine;
+  const moodOk    = m => !selectedMood || m.mood.includes(selectedMood);
+  const budgetOk  = m => m.budget.includes(selectedBudget);
+
+  // 1단계: 모든 조건 충족
+  let pool = menus.filter(m => cuisineOk(m) && moodOk(m) && budgetOk(m));
+
+  // 2단계: 예산 제외 (카테고리 + 기분 유지)
+  let notice = '';
+  if (pool.length === 0) {
+    pool = menus.filter(m => cuisineOk(m) && moodOk(m));
+    notice = '예산 조건에 맞는 메뉴가 없어서 비슷한 걸 골라봤어요';
+  }
+
+  // 3단계: 기분 제외 (카테고리만 유지)
+  if (pool.length === 0) {
+    pool = menus.filter(m => cuisineOk(m));
+    notice = '딱 맞는 메뉴가 없어서 같은 카테고리에서 골라봤어요';
+  }
+
+  // 4단계: 전체 (그래도 없으면)
+  if (pool.length === 0) {
+    pool = menus;
+    notice = '조건에 맞는 메뉴가 없어서 전체에서 골라봤어요';
+  }
+
+  const pick = pool[Math.floor(Math.random() * pool.length)];
 
   const tagsHtml = pick.tags.map((t, i) => {
     const c = tagColors[i % tagColors.length];
@@ -228,6 +246,7 @@ function pickMenu() {
         <div>
           <div class="result-name">${pick.name}</div>
           <div class="result-meta">${pick.cuisine} · ${pick.kcal}</div>
+          ${notice ? `<div class="result-notice">* ${notice}</div>` : ''}
         </div>
       </div>
       <p class="result-desc">${pick.desc}</p>
